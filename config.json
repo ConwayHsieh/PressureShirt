@@ -1,0 +1,16 @@
+{
+    "control": {
+        "volume": 10,
+        "force_threshold": 10
+    },
+    "SoundFiles": {
+        "dir": "./SoundFiles/",
+        "files": ["00.mp3", "01.mp3"]
+    },
+    "attributes": {
+        "rows": 3,
+        "columns": 3,
+        "width": 1,
+        "height": 1
+    }
+}
