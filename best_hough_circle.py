@@ -64,5 +64,5 @@ def find_nearest(array, value):
 	return idx
 
 if __name__ == "__main__":
-	result = best_hough_circle('./images/gradient_circles.png', (0, 50), (25))
+	result = best_hough_circle('./images/gradient_circles.png', (0, 50), 25)
 	print(result)
