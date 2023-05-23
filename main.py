@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import json, time
+import json
 import scipy.optimize as opt
 import numpy as np
 import pandas as pd
@@ -7,11 +7,15 @@ import matplotlib.pyplot as plt
 from scipy.spatial import distance
 
 def main():
-	start = time.time()
+	# load configs
 	with open("config.json", "r") as f:
 		config = json.load(f)
-	#vol = config["control"]["volume"]
-	
+	vol = config["control"]["volume"]
+	sound_dir = config["SoundFiles"]["dir"]
+	sound_files = config["SoundFiles"]["files"]
+	grid_rows = config["attributes"]["rows"]
+	grid_cols = config["attributes"]["columns"]
+
 	'''
 	xy, z = gen_test_data()
 	#print(xy)
@@ -28,12 +32,12 @@ def main():
 	i = z.argmax()
 	guess = [1, x[i], y[i], 1, 1, 1]
 	pred_params, uncert_cov = opt.curve_fit(gauss2d, xy, z, p0=guess)
-	print(pred_params)
+	#print(pred_params)
 	pred_xy = pred_params[1:3]
 	print('Predicted xy: ')
 	print(pred_xy)
 
-	grid = gen_grid()
+	grid = gen_grid(rows=grid_rows, cols=grid_cols)
 	grid_x, grid_y = grid
 	print(grid)
 	print(grid.shape)
@@ -103,8 +107,12 @@ def gen_rng_data(num, x0, y0):
     zobs = gauss2d(xy, *params)
     return xy, zobs
 
-def gen_grid(n=5):
-	return np.mgrid[1/n:1:1/n,1/n:1:1/n]
+def gen_grid(rows=2, cols=2):
+	rows = rows+1
+	cols = cols+1
+	max_val = 0.99999
+	return np.mgrid[1/cols:max_val:1/cols,
+					1/rows:max_val:1/rows]
 
 def find_closest_point(xy, grid):
 	grid = grid.reshape(2,-1).transpose()
