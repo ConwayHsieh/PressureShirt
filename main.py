@@ -1,9 +1,10 @@
 #!/usr/bin/python3
-import json
+import os, json
 import scipy.optimize as opt
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from playsound import playsound
 from scipy.spatial import distance
 
 def main():
@@ -12,10 +13,19 @@ def main():
 		config = json.load(f)
 	vol = config["control"]["volume"]
 	sound_dir = config["SoundFiles"]["dir"]
-	sound_files = config["SoundFiles"]["files"]
+	sound_files_dict = config["SoundFiles"]["files_dict"]
+	#print(sound_files_dict)
+	#print(len(sound_files_dict))
+
 	grid_rows = config["attributes"]["rows"]
 	grid_cols = config["attributes"]["columns"]
 
+	if grid_rows*grid_cols != len(sound_files_dict):
+		raise Exception(\
+			"Input grid and corresponding sound files dictionary do not match in size")
+
+	# generating test data
+	# TODO interface with data intake
 	'''
 	xy, z = gen_test_data()
 	#print(xy)
@@ -39,18 +49,21 @@ def main():
 
 	grid = gen_grid(rows=grid_rows, cols=grid_cols)
 	grid_x, grid_y = grid
-	print(grid)
-	print(grid.shape)
+	#print(grid)
+	#print(grid.shape)
 
 	ax = plot(xy, z, pred_params)
 	ax.scatter(grid_x, grid_y, marker='*')
 
-	closest_val = find_closest_point(pred_xy, grid)
+	closest_val, closest_val_index = find_closest_point(pred_xy, grid)
 	print(closest_val)
+	print(closest_val_index)
 
 	ax.plot(closest_val[0], closest_val[1], marker='x')
 
 	plt.show()
+
+	playsound(os.path.join(sound_dir,sound_files_dict[str(closest_val_index)]))
 
 	return
 
@@ -116,9 +129,12 @@ def gen_grid(rows=2, cols=2):
 
 def find_closest_point(xy, grid):
 	grid = grid.reshape(2,-1).transpose()
+	print(grid)
 	dist = np.array([distance.euclidean(g, xy) for g in grid])
-	min_val = np.argmin(dist)
-	return grid[min_val]
+	min_val_index = np.argmin(dist)
+	return grid[min_val_index], min_val_index
+
+
 
 if __name__ == "__main__":
 	main()

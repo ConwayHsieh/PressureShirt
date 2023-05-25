@@ -5,7 +5,12 @@
     },
     "SoundFiles": {
         "dir": "./SoundFiles/",
-        "files": ["00.mp3", "01.mp3", "10.mp3", "11.mp3"]
+        "files_dict": { 
+            "0":"00.mp3", 
+            "1":"01.mp3", 
+            "2":"10.mp3", 
+            "3":"11.mp3"
+        }
     },
     "attributes": {
         "rows": 2,
